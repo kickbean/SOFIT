@@ -310,7 +310,7 @@ L&=P(w_{1:N},Y_{1:N},Q_{1:N},I_c) \\
 
 \begin{align}
 L\propto & P(Q_{1:N}|w_{1:N},I_c) P(Y_{1:N}|w_{1:N}) P(w_{1:N}) \\
-				=& \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N{P(Y_i|\Pi_i)} \prod_{i=1}^N {P(w_i|w_{1:i-1})}
+				=& \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N{P(Y_i|w_i)} \prod_{i=1}^N {P(w_i|w_{1:i-1})}
 \end{align}
 
 \noindent where $\prod_{i=1}^N {P(w_i|w_{1:i-1})}$ can be viewed as the smoothness constraint. With the weakly coupled Markov assumption, we only take into account $H=min(i,h)$ number of frames prior to frame $i$. It states that the aligned frame $I_i$ should have similar appearance with its previous $h$ neighbors (if $h<i$). Thus, the joint probability can be written as 
@@ -330,7 +330,7 @@ Here, the smoothness constraint $P(w_i|w_{i-H:i-1})$ obeys zeros-mean Gaussian d
 
 \begin{align}
 \label{data}
-E(\Pi_i) = &\sum_{i=1}^{N}Dist(I_i(p+w_i),I_c) \\
+E = &\sum_{i=1}^{N}Dist(I_i(p+w_i),I_c) \\
 \label{smooth}
 	+ &\frac{\alpha}{2H}\sum_{i=1}^{N}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_2^2 \\
 \label{penalty}
