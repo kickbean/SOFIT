@@ -285,56 +285,56 @@ The objective of this work is to align objects in video-based data in an uncontr
 
 \subsection{\label{sec:model}The Generalized Model}
 
-Let $p=(x,y)$ be the grid coordinate of $i$-th frame of grayscale image, $I_i$. Given a sequence of $N$ unregistered frames of an object, our goal is to align individual frame with respect to a canonical representation of this object $I_c$. Denote a generalized form of transformation function, $\Pi_i(\cdot)$, to register frame $i$, which we intend to solve. We assume the standard \textcolor[rgb]{1,0,0}{Gaussian measurement} model
+Let $p=(x,y)$ be the grid coordinate of $i$-th frame of grayscale image, $I_i$. Given a sequence of $N$ unregistered frames of an object, our goal is to align individual frame with respect to a canonical representation of this object $I_c$. \textcolor[rgb]{1,0,0}{Denote $w_i$ as the flow field to register frame $i$, then the $i$-th registered frame can be written as $I_i(p+w_i)$. To align the entire sequence, the objective is to recover $w_1,\ldots,w_N$ for each one of the $N$ images in the sequence, respectively. We assume the standard Gaussian measurement} model
 
 \begin{align}
 \label{model:measurement}
-Q_i=Dist(\Pi_i(I_i),I_c)+w
+Q_i=Dist(I_i(p+w_i),I_c)+m_Q
 \end{align}
 
-\noindent where $Dist(\Pi_i(I_i),I_c)$ in Eq. \ref{model:measurement} is the distance measure between the transformed frame $I_i$, i.e., $\Pi_i(I_i)$, and the canonical representation $I_c$. In this paper, we attempt to align every frame w.r.t. the canonical representation such that they share similar structure. However, in general, it is applicable to many other distance measures. $w$ is i.i.d. normally distributed zero-mean measurement noise. We also write a \textcolor[rgb]{1,0,0}{Gaussian transformation regularity model} as
+\noindent \textcolor[rgb]{1,0,0}{where $Dist(I_i(p+w_i),I_c)$ in Eq.~\ref{model:measurement} is the distance measure between the registration result, $I_i(p+w_i)$, and the canonical representation, $I_c$.} In this paper, we attempt to align every frame w.r.t. the canonical representation such that they share similar structure. However, in general, it is applicable to many other distance measures. $m_Q$ is i.i.d. normally distributed zero-mean measurement noise. We also write a Gaussian transformation regularity model as
 
 \begin{align}
 \label{model:penalty}
-Y_i=\Pi_i(p)-p+m
+Y_i=w_i-p+m_Y
 \end{align}
 
-\noindent it penalizes excessive transformation due to overfitting. $m$ is also an i.i.d. noise process in zeros-mean Gaussian distribution. The joint probability of all variables can be written as
+\noindent it penalizes excessive transformation due to overfitting. $m_Y$ is also an i.i.d. noise process in zeros-mean Gaussian distribution. The joint probability of all variables can be written as
 
 \begin{align}
-L&=P(\Pi_{1:N},Y_{1:N},Q_{1:N},I_c) \\
- &=P(Q_{1:N},Y_{1:N}|\Pi_{1:N},I_c,)P(\Pi_{1:N}|I_c)P(I_c)
+L&=P(w_{1:N},Y_{1:N},Q_{1:N},I_c) \\
+ &=P(Q_{1:N},Y_{1:N}|w_{1:N},I_c,)P(w_{1:N}|I_c)P(I_c)
 \end{align}
 
-\noindent where $\Pi_{1:N}$ is short for $\Pi_1,\ldots,\Pi_N$. Dropping the constant term and using the independence of our model definition in Eq. \ref{model:measurement}, \ref{model:penalty}, we obtain
+\noindent where $w_{1:N}$ is short for $w_1,\ldots,w_N$. Dropping the constant term and using the independence of our model definition in Eq. \ref{model:measurement}, \ref{model:penalty}, we obtain
 
 \begin{align}
-L\propto & P(Q_{1:N}|\Pi_{1:N},I_c) P(Y_{1:N}|\Pi_{1:N}) P(\Pi_{1:N}) \\
-				=& \prod_{i=1}^N{P(Q_i|\Pi_i,I_c)} \prod_{i=1}^N{P(Y_i|\Pi_i)} \prod_{i=1}^N {P(\Pi_i|\Pi_{1:i-1})}
+L\propto & P(Q_{1:N}|w_{1:N},I_c) P(Y_{1:N}|w_{1:N}) P(w_{1:N}) \\
+				=& \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N{P(Y_i|\Pi_i)} \prod_{i=1}^N {P(w_i|w_{1:i-1})}
 \end{align}
 
-\noindent where $\prod_{i=1}^N {P(\Pi_i|\Pi_{1:i-1})}$ can be viewed as the smoothness constraint. With the weakly coupled Markov assumption, we only take into account $H=min(i,h)$ number of frames prior to frame $i$. It states that the aligned frame $I_i$ should have similar appearance with its previous $h$ neighbors (if $h<i$). Thus, the joint probability can be written as 
+\noindent where $\prod_{i=1}^N {P(w_i|w_{1:i-1})}$ can be viewed as the smoothness constraint. With the weakly coupled Markov assumption, we only take into account $H=min(i,h)$ number of frames prior to frame $i$. It states that the aligned frame $I_i$ should have similar appearance with its previous $h$ neighbors (if $h<i$). Thus, the joint probability can be written as 
 
 \begin{align}
-L\propto & \prod_{i=1}^N{P(Q_i|\Pi_i,I_c)} \prod_{i=1}^N {P(\Pi_i|\Pi_{i-H:i-1})} \prod_{i=1}^N{P(Y_i|\Pi_i)} \\
+L\propto & \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N {P(w_i|w_{i-H:i-1})} \prod_{i=1}^N{P(Y_i|w_i)} \\
 \label{data_exp}
-				=& \prod_{i=1}^N \frac{1}{\sigma \sqrt{2\pi}} \exp\{-\frac{1}{2\sigma}Dist(\Pi_i(I_i),I_c)\} \cdot \\
+				=& \prod_{i=1}^N \frac{1}{\sigma \sqrt{2\pi}} \exp\{-\frac{1}{2\sigma}Dist(I(p+w_i),I_c)\} \cdot \\
 \label{smooth_exp}
-				 &\prod_{i=1}^N \frac{1}{\epsilon \sqrt{2\pi}} \exp\{-\frac{1}{2\epsilon H}\sum_{j=1}^{H}\parallel{\Pi_i(I_i)-\Pi_{i-j}(I_{i-j})}\parallel_2^2\} \cdot \\
+				 &\prod_{i=1}^N \frac{1}{\epsilon \sqrt{2\pi}} \exp\{-\frac{1}{2\epsilon H}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_2^2\} \cdot \\
 \label{penalty_exp}
-				 &\prod_{i=1}^N \frac{1}{\tau \sqrt{2\pi}} \exp\{-\frac{1}{2\tau}\parallel{\Pi_i(p)-p}\parallel_2^2\}
+				 &\prod_{i=1}^N \frac{1}{\tau \sqrt{2\pi}} \exp\{-\frac{1}{2\tau}\parallel{w_i-p}\parallel_2^2\}
 \end{align}
 
 
-Here, the smoothness constraint $P(\Pi_i|\Pi_{i-H:i-1})$ obeys zeros-mean Gaussian distribution. $\sigma$, $\epsilon$, $\tau$ control the variance for the corresponding Gaussian distribution. Maximizing the likelihood, $L$, is equivalent to minimizing its negative log likelihood, $E$, where
+Here, the smoothness constraint $P(w_i|w_{i-H:i-1})$ obeys zeros-mean Gaussian distribution. $\sigma$, $\epsilon$, $\tau$ control the variance for the corresponding Gaussian distribution. Maximizing the likelihood, $L$, is equivalent to minimizing its negative log likelihood, $E$, where
 
 \begin{align}
 \label{data}
-E(\Pi_i) = &\sum_{i=1}^{N}Dist(\Pi_i(I_i),I_c) \\
+E(\Pi_i) = &\sum_{i=1}^{N}Dist(I_i(p+w_i),I_c) \\
 \label{smooth}
-	+ &\frac{\alpha}{2H}\sum_{i=1}^{N}\sum_{j=1}^{H}\parallel{\Pi_i(I_i)-\Pi_{i-j}(I_{i-j})}\parallel_2^2 \\
+	+ &\frac{\alpha}{2H}\sum_{i=1}^{N}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_2^2 \\
 \label{penalty}
-	+ &\frac{\beta}{2}\sum_{i=1}^{N}\parallel{\Pi_i(p)-p}\parallel_2^2
+	+ &\frac{\beta}{2}\sum_{i=1}^{N}\parallel{w_i-p}\parallel_2^2
 \end{align}
 
 
