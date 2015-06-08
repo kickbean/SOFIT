@@ -73,6 +73,8 @@
 \usepackage{hyperref}
 \usepackage{pbox}
 
+\newcommand{\Songfan}[1]{\textcolor{red}{#1}}
+
 \newcommand{\argmin}{\arg\!\min}
 \newcommand{\argmax}{\arg\!\max}
 
@@ -80,7 +82,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{A Dense Flow-based Framework for Real-time Streaming Object Registration}
+\title{A Dense Flow-based Framework for Real-time Streaming Object Registration in Compound Motion}
 %Understanding Consumer Preference for Advertisement\\from Facial Expression}
 %
 %
@@ -157,7 +159,7 @@ IEEEtran.cls for Computer Society Journals}
 \IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
 
-\textcolor[rgb]{1,0,0}{A moving object often has elastic and deformable surfaces (e.g., the human head). Tracking and measuring surface deformation while the object body itself also moves via video analysis is a challenging problem with many applications.  For example, video-based facial expression recognition requires to track non-rigid motions of facial features without being affected by any rigid motion of the head. In this paper, we present a video alignment framework to extract and characterize surface deformations with respect to a fixed reference (a canonical form) in accompanying rigid-body motions.} We define a general model for object alignment in a Baysian framework, and rigorously show that a special case of the model results in a SIFT-flow- and optical-flow-based least-square problem. We demonstrate that dynamic programming can be used to speed up the computation. The proposed algorithm has a wide range of applications, including the analysis of subtle facial muscle dynamics in spontaneous expressions, vehicle recognition, and image super-resolution.  Experimental and quantitative results demonstrate the efficacy of the proposed algorithm.
+\Songfan{A moving object often has elastic and deformable surfaces (e.g., the human head). Tracking and measuring surface deformation while the object body itself also moves via video analysis is a challenging problem with many applications.  For example, video-based facial expression recognition requires to track non-rigid motions of facial features without being affected by any rigid motion of the head. In this paper, we present a video alignment framework to extract and characterize surface deformations with respect to a fixed reference (a canonical form) accompanied by rigid-body motions.} We define a general model for object alignment in a Baysian framework, and rigorously show that a special case of the model results in a SIFT-flow- and optical-flow-based least-square problem. We demonstrate that dynamic programming can be used to speed up the computation. The proposed algorithm has a wide range of applications, including the analysis of subtle facial muscle dynamics in spontaneous expressions, vehicle recognition, and image super-resolution.  Experimental and quantitative results demonstrate the efficacy of the proposed algorithm.
 
 
 \end{abstract}
@@ -204,10 +206,10 @@ Object registration, spontaneous facial expression, SIFT flow, optical flow, sup
 
 \section{Introduction}
 
-\IEEEPARstart{V}{ideo} registration is an important problem for video processing, computer vision and pattern recognition. It has various applications such as face recognition~\cite{Wagner2009}, facial expression recognition~\cite{Valstar12}, image stitching~\cite{Szeliski06}, video compression \cite{h264}, color demosaicking \cite{wu}, and etc. Depending upon different applications, there can be specific requirements for the registration techniques~\cite{Uenohara95}~\cite{Caspi_PAMI02}. \textcolor[rgb]{1,0,0}{Broadly speaking, in the process of registration most algorithms overlay objects spatially via motion estimation and compensation. 
+\IEEEPARstart{V}{ideo} registration is an important problem for video processing, computer vision and pattern recognition. It has various applications such as face recognition~\cite{Wagner2009}, facial expression recognition~\cite{Valstar12}, image stitching~\cite{Szeliski06}, color demosaicking \cite{Wu_TIP06}, and etc. Depending upon different applications, there can be specific requirements for the registration techniques~\cite{Uenohara95}~\cite{Caspi_PAMI02}. \Songfan{Broadly speaking, in the process of registration most algorithms overlay objects spatially via motion estimation and compensation. 
 }
 
-\textcolor[rgb]{1,0,0}{Video registration becomes more challenging a problem if there are object surface deformations which are further compounded by rigid-body motions or/and camera motion; in particular, if subtle surface non-rigid motions have to be detected and precisely characterized in applications like medical imaging and facial expression. To appreciate the difficulties in precisely characterizing surface deformation amidst complex compound motion, let us examine a concrete example: the human facial expression analysis, in which the non-rigid muscle motion is of the central focus.  Accurate facial expression analysis is hampered by the following complications:} 
+\Songfan{Video registration becomes a more challenging problem if there are object surface deformations which are further compounded by rigid-body motions or/and camera motion; in particular, if subtle surface non-rigid motions have to be detected and precisely characterized in applications like medical imaging and facial expression. To appreciate the difficulties in precisely characterizing surface deformation amidst complex compound motion, let us examine a concrete example: the human facial expression analysis, in which the non-rigid muscle motion is of the central focus.  Accurate facial expression analysis is hampered by the following complications:} 
 
 \begin{figure}[!t]
 	\centering
@@ -226,20 +228,20 @@ Object registration, spontaneous facial expression, SIFT flow, optical flow, sup
 %\vspace{-5pt}
 \end{enumerate}
 
-In this paper, we propose a new video registration approach, termed SIFT and optical flow image transform (SOFIT)\footnote{supplementary materials available at the project page:~\url{http://ee.ucr.edu/~syang/sofit/index.html}}, that tackles the aforementioned challenges in \textcolor[rgb]{1,0,0}{aligning object features through video frames in the presence of compounded surface deformation and rigid motion.}
+In this paper, we propose a new video registration approach, termed SIFT and optical flow image transform (SOFIT)\footnote{supplementary materials available at the project page:~\url{http://ee.ucr.edu/~syang/sofit/index.html}}, that tackles the aforementioned challenges in \Songfan{aligning object features through video frames in the presence of compounded surface deformation and rigid motion.}
 
-\textcolor[rgb]{1,0,0}{
+\Songfan{
 For the purposes of recognition, super-resolution, video compression, etc., the deformed object should be performed with respect to a canonical form or reference model.
 For instance, such a reference model is instrumental in facial expression analysis ~\cite{Yang_SMCB12}.
 }
 
-Facial muscle motion is similar for the same expression irrespective of the person~\cite{Ekman78}, but the facial feature location (such as eyes, nose, mouth) of different people varies. Thus, finding a canonical reference feature location for all the faces is favorable for analyzing the dynamics of facial features across population. \textcolor[rgb]{1,0,0}{In the proposed SOFIT approach, we need to transform every frame of the streaming video data into a canonical pose by neutralizing the effects of rigid body motion on the imaged deformable object.}
+Facial muscle motion is similar for the same expression irrespective of the person~\cite{Ekman78}, but the facial feature location (such as eyes, nose, mouth) of different people varies. Thus, finding a canonical reference feature location for all the faces is favorable for analyzing the dynamics of facial features across population. \Songfan{In the proposed SOFIT approach, we need to transform every frame of the streaming video data into a canonical pose by neutralizing the effects of rigid body motion on the imaged deformable object.}
 
-\textcolor[rgb]{1,0,0}{To further clarify the above design objective, let us examine, via Fig.~\ref{fig:regComp}, how different video registration methods behave when being applied to register frame 2 with respect to frame 1.  All methods in this figure are able to account for the in-plane head rotation. However, as illustrated by the frame difference images (row 3) for the point-based affine transformation (column 2) and the SIFT flow transformation (column 3), there is a motion on most parts of the face. This is similar to the original face image (column 1) where the image is the output of Viola-Jones face detector~\cite{Viola_IJCV04} and is not registered. This suggests us to impose the temporal smoothness constraint so that the frame difference is small for areas with no motion; while for areas with motion (mouth area in this case), the frame difference should capture this change, as demonstrated by the results of the proposed method (column 4).}
+\Songfan{To further clarify the above design objective, let us examine, via Fig.~\ref{fig:regComp}, how different video registration methods behave when being applied to register frame 2 with respect to frame 1.  All methods in this figure are able to account for the in-plane head rotation. However, as illustrated by the frame difference images (row 3) for the point-based affine transformation (column 2) and the SIFT flow transformation (column 3), there is a motion on most parts of the face. This is similar to the original face image (column 1) where the image is the output of Viola-Jones face detector~\cite{Viola_IJCV04} and is not registered. This suggests us to impose the temporal smoothness constraint so that the frame difference is small for areas with no motion; while for areas with motion (mouth area in this case), the frame difference should capture this change, as demonstrated by the results of the proposed method (column 4).}
 
 In this paper, we model the alignment-of-compound-motion problem by three parts. First, each frame is aligned with respect to a reference frame in a general distance measure. It is then instantiated to the SIFT flow criterion thereafter. Second, our model enforces a smoothness constraint on adjacent frames. It is realistic for the consecutive frames to comply with the smoothness constraint. We realize this by depending this current transformation estimation on a number of previous frames in an optical flow criterion. Third, large transformation is penalized to prevent over-fitting. 
 
-\textcolor[rgb]{1,0,0}{
+\Songfan{
 We also extend this approach to register many other classes of objects and demonstrate a range of applications in areas such as vehicle recognition and image super-resolution. 
 }
 
@@ -251,9 +253,8 @@ The rest of the paper is organized as follows. After reviewing the related work 
 
 \subsection{\label{sec:related_work}Related Work}
 
-Video registration has been a fundamental topic in computer vision and image processing. As the object many undergo a complex motion (rigid and/or non-rigid), conventional video registration method~\cite{Uenohara95}~\cite{Caspi_PAMI02} attempt to correct both types of motion.
-
-On the contrary, we tackle of the video registration problem of removing rigid motion while retain non-rigid motion. Such problem exists occurs when a moving object has deformable surface, which may contain crucial information. A typical scenario is facial expression analysis.
+\Songfan{
+Video registration has been a fundamental topic in computer vision and image processing. As the object many undergo a complex motion (rigid and/or non-rigid), conventional video registration method~\cite{Uenohara95}~\cite{Caspi_PAMI02} attempt to correct both types of motion. On the contrary, we attempt to remove the rigid motion while retain and characterize the non-rigid motion. Such problem exists occurs when a moving object has deformable surface, which may contain crucial information (\textit{e.g.} facial expression).}
 
 To analyze facial expressions, behavioral scientists have developed facial action coding system (FACS)~\cite{Ekman78} as an objective standard to describe the muscle motion. According to FACS, human (coders) can decompose every possible facial behavior into action units (AU), which roughly correspond to the muscles that produce them. Automatic AU recognition~\cite{Zhao_PAMI07}\cite{Valstar_SMCB12}, has been quite successful for well-aligned, posed data, such as MMI~\cite{Pantic_ICME05} and CK+~\cite{Kanade_FG00} dataset. Unfortunately, AU recognition in an uncontrolled real-world environment remains a difficult problem, as shown in the Facial Expression Recognition and Analysis Challenge (FERA2011)~\cite{Valstar_FERA11} due to the difficulties mentioned in the introduction. Existing face registration approaches attempt to solve different aspects of the aforementioned challenges. In the face recognition and image retrieval communities, researchers attempt to discard the non-rigid motion from facial data through registration using an ensemble of images~\cite{LearnedMiller_PAMI06}\cite{Huang_ICCV07}\cite{Peng_CVPR10}. These approaches are not suitable for the facial expression recognition domain, where the following two criteria should be met:
 \begin{enumerate}
@@ -271,9 +272,9 @@ Besides, affine transform parameter estimation by a small set of points can be s
 The contributions of this work are summarized as follows:
 
 \begin{enumerate}
-\item \textcolor[rgb]{1,0,0}{Unlike methods in the registration literature that attempt to correct the motion, we attempt to solve a more challenging problem: aligning objects under compound motion, in hope to correct rigid motion while maintaining the non-rigid motion. }
-\item We propose a novel real-time streaming registration framework, SOFIT, that aligns the objects with non-rigid local motion, e.g., muscle motion from facial expression (Section~\ref{sec:approach}). SOFIT is a holistic approach and no detection of local features (eyes, nose, mouth) is needed. Therefore, it is tolerant to noise and low image resolution. The proposed method results in temporally smooth image sequences.
-\item We quantitatively demonstrate versatility of our registration method in fields of spontaneous AU recognition, image super-resolution, vehicle recognition. \textcolor[rgb]{1,0,0}{We have also shown qualitative results in generic object alignment under various challenges}.
+\item \Songfan{Unlike methods in the registration literature that attempt to correct the motion, we attempt to solve a more challenging problem: aligning objects under compound motion, in hope to compensate the rigid motion while maintaining the non-rigid motion. }
+\item We propose a novel real-time streaming registration framework, SOFIT, that aligns the objects under compound motion (Section~\ref{sec:approach}). SOFIT is a holistic approach and no detection of local features (eyes, nose, mouth) is needed. Therefore, it is tolerant to noise and low image resolution. The proposed method results in temporally smooth image sequences.
+\item We quantitatively demonstrate versatility of our registration method in fields of spontaneous AU recognition, image super-resolution, vehicle recognition. \Songfan{We have also shown qualitative results in generic object alignment under various challenges}.
 \end{enumerate}
 
 One of our previous work \cite{Yang_FG13} also uses the idea of SIFT/optical flow approximation for alignment estimation. In this paper, we propose a general framework to the alignment problem and rigorously show that how the final closed-form solution is obtained. Unlike \cite{Yang_FG13} where transformation estimation is propagated by affine matrix multiplication, the solution in this paper shows that it is superior to propagated the flow field for transformation approximation instead. Due to the robustness of this framework, it is no longer desirable to greedily check the registration result for every frame, such as in \cite{Yang_FG13}. Instead, a loop-closure rectification is used to correct the propagation error, which can be computed in parallel with the propagation computation for further speedup. 
@@ -285,32 +286,35 @@ The objective of this work is to align objects in video-based data in an uncontr
 
 \subsection{\label{sec:model}The Generalized Model}
 
-Let $p=(x,y)$ be the grid coordinate of $i$-th frame of grayscale image, $I_i$. Given a sequence of $N$ unregistered frames of an object, our goal is to align individual frame with respect to a canonical representation of this object $I_c$. \textcolor[rgb]{1,0,0}{Denote $w_i$ as the flow field to register frame $i$, then the $i$-th registered frame can be written as $I_i(p+w_i)$. To align the entire sequence, the objective is to recover $w_1,\ldots,w_N$ for each one of the $N$ images in the sequence, respectively. We assume the standard Gaussian measurement} model
+\Songfan{Let $p=(x,y)$ be the grid coordinate of $i$-th frame of grayscale image, $I_i$. For simplicity, we write the intensity of an image, $I_i$, as a shorthand for $I_i(p)$. Given a sequence of $N$ unregistered frames of an object, our goal is to align individual frame with respect to a canonical representation of this object $I_c$. Denote $w_i$ as the flow field to register frame $i$, then the $i$-th registered frame can be written as $I_i(p+w_i)$. To align the entire sequence, the objective is to recover $w_1,\ldots,w_N$ for each one of the $N$ images in the sequence, respectively. We assume the standard Gaussian measurement model}
 
+\Songfan{
 \begin{align}
 \label{model:measurement}
-Q_i=Dist(I_i(p+w_i),I_c)+m_Q
+Q_i=Dist(I_i(p+w_i),I_c)+m_Q,
 \end{align}
+}
 
-\noindent \textcolor[rgb]{1,0,0}{where $Dist(I_i(p+w_i),I_c)$ in Eq.~\ref{model:measurement} is the distance measure between the registration result, $I_i(p+w_i)$, and the canonical representation, $I_c$.} In this paper, we attempt to align every frame w.r.t. the canonical representation such that they share similar structure. However, in general, it is applicable to many other distance measures. $m_Q$ is i.i.d. normally distributed zero-mean measurement noise. We also write a Gaussian transformation regularity model as
+\noindent \Songfan{where $Dist(I_i(p+w_i),I_c)$ in Eq.~\ref{model:measurement} is the distance measure between the registration result, $I_i(p+w_i)$, and the canonical representation, $I_c$.} In this paper, we attempt to align every frame w.r.t. the canonical representation such that they share similar structure. However, in general, it is applicable to many other distance measures. $m_Q$ is i.i.d. normally distributed zero-mean measurement noise. We also write a Gaussian transformation regularity model as
 
+\Songfan{
 \begin{align}
 \label{model:penalty}
-Y_i=w_i-p+m_Y
+Y_i=w_i+m_Y,
 \end{align}
-
-\noindent it penalizes excessive transformation due to overfitting. $m_Y$ is also an i.i.d. noise process in zeros-mean Gaussian distribution. The joint probability of all variables can be written as
+}
+\noindent where $w_i$ is the underline true variable we intend to solve; $Y_i$ is the measurement of $w_i$. We model the difference of $w_i$ and $Y_i$, $m_Y$, as an i.i.d. noise process in zeros-mean Gaussian distribution. This model penalizes excessive transformation due to over-fitting. The joint probability of all variables can be written as
 
 \begin{align}
 L&=P(w_{1:N},Y_{1:N},Q_{1:N},I_c) \\
- &=P(Q_{1:N},Y_{1:N}|w_{1:N},I_c,)P(w_{1:N}|I_c)P(I_c)
+ &=P(Q_{1:N},Y_{1:N}|w_{1:N},I_c,)P(w_{1:N}|I_c)P(I_c),
 \end{align}
 
 \noindent where $w_{1:N}$ is short for $w_1,\ldots,w_N$. Dropping the constant term and using the independence of our model definition in Eq. \ref{model:measurement}, \ref{model:penalty}, we obtain
 
 \begin{align}
 L\propto & P(Q_{1:N}|w_{1:N},I_c) P(Y_{1:N}|w_{1:N}) P(w_{1:N}) \\
-				=& \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N{P(Y_i|w_i)} \prod_{i=1}^N {P(w_i|w_{1:i-1})}
+				=& \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N{P(Y_i|w_i)} \prod_{i=1}^N {P(w_i|w_{1:i-1})},
 \end{align}
 
 \noindent where $\prod_{i=1}^N {P(w_i|w_{1:i-1})}$ can be viewed as the smoothness constraint. With the weakly coupled Markov assumption, we only take into account $H=min(i,h)$ number of frames prior to frame $i$. It states that the aligned frame $I_i$ should have similar appearance with its previous $h$ neighbors (if $h<i$). Thus, the joint probability can be written as 
@@ -318,23 +322,23 @@ L\propto & P(Q_{1:N}|w_{1:N},I_c) P(Y_{1:N}|w_{1:N}) P(w_{1:N}) \\
 \begin{align}
 L\propto & \prod_{i=1}^N{P(Q_i|w_i,I_c)} \prod_{i=1}^N {P(w_i|w_{i-H:i-1})} \prod_{i=1}^N{P(Y_i|w_i)} \\
 \label{data_exp}
-				=& \prod_{i=1}^N \frac{1}{\sigma \sqrt{2\pi}} \exp\{-\frac{1}{2\sigma}Dist(I(p+w_i),I_c)\} \cdot \\
+				=& \prod_{i=1}^N \frac{1}{\sigma \sqrt{2\pi}} \exp\{-\frac{1}{2\sigma}Dist(I(p+w_i),I_c)\}  \\
 \label{smooth_exp}
-				 &\prod_{i=1}^N \frac{1}{\epsilon \sqrt{2\pi}} \exp\{-\frac{1}{2\epsilon H}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_2^2\} \cdot \\
+				\times &\prod_{i=1}^N \frac{1}{\epsilon \sqrt{2\pi}} \exp\{-\frac{1}{2\epsilon H}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_f^2\} \\
 \label{penalty_exp}
-				 &\prod_{i=1}^N \frac{1}{\tau \sqrt{2\pi}} \exp\{-\frac{1}{2\tau}\parallel{w_i-p}\parallel_2^2\}
+				\times &\prod_{i=1}^N \frac{1}{\tau \sqrt{2\pi}} \exp\{-\frac{1}{2\tau}\parallel{w_i}\parallel_f^2\},
 \end{align}
 
 
-Here, the smoothness constraint $P(w_i|w_{i-H:i-1})$ obeys zeros-mean Gaussian distribution. $\sigma$, $\epsilon$, $\tau$ control the variance for the corresponding Gaussian distribution. Maximizing the likelihood, $L$, is equivalent to minimizing its negative log likelihood, $E$, where
+\noindent where $\parallel \cdot \parallel_f$ is the Frobenius norm; the smoothness constraint $P(w_i|w_{i-H:i-1})$ obeys zeros-mean Gaussian distribution; $\sigma$, $\epsilon$, $\tau$ control the variance for the corresponding Gaussian distribution. Maximizing the likelihood, $L$, is equivalent to minimizing its negative log likelihood, $E$, where
 
 \begin{align}
 \label{data}
 E = &\sum_{i=1}^{N}Dist(I_i(p+w_i),I_c) \\
 \label{smooth}
-	+ &\frac{\alpha}{2H}\sum_{i=1}^{N}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_2^2 \\
+	+ &\frac{\alpha}{2H}\sum_{i=1}^{N}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_f^2 \\
 \label{penalty}
-	+ &\frac{\beta}{2}\sum_{i=1}^{N}\parallel{w_i-p}\parallel_2^2
+	+ &\frac{\beta}{2}\sum_{i=1}^{N}\parallel{w_i}\parallel_f^2,
 \end{align}
 
 
@@ -342,67 +346,79 @@ E = &\sum_{i=1}^{N}Dist(I_i(p+w_i),I_c) \\
 
 \subsection{\label{sec:model}The Flow-based Instantiation}
 
-The $Dist$ function in Eq.~\ref{data} measures the closeness of two images. One can define its form according to different applications. Since our objective is structural matching, we opt to use SIFT flow \cite{Liu_PAMI11} for similarity matching under large, non-rigid transformation. SIFT flow \cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. The SIFT flow algorithm robustly matches dense SIFT features \cite{SIFT} between two images, resulting in a structural coherent image pairs. Thus, the data matching term in Eq. \ref{data} can be instantiated in the coordinate space as
+The $Dist$ function in Eq.~\ref{data} measures the closeness of two images. One can define its form according to different applications. Since our objective is structural matching, we opt to use SIFT flow \cite{Liu_PAMI11} for similarity matching under large, non-rigid transformation. SIFT flow \cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. The SIFT flow algorithm matches dense SIFT features~\cite{SIFT} between two images, resulting in a structural coherent image pairs with. Although SIFT flow by itself generates block artifacts, it is a still a good structural matching constraint. Thus, the data matching term in Eq. \ref{data} can be instantiated in the coordinate space as
 
 \begin{align}
 \label{data_sift}
-&\sum_{i=1}^{N}Dist(\Pi_i(I_i),I_c)=\sum_{i=1}^{N}\parallel{\Pi_i(p)-(p+f_s^i)}\parallel_2^2
+&\sum_{i=1}^{N}Dist(I_i(p+w_i),I_c)=\sum_{i=1}^{N}\parallel{w_i-f_s^i}\parallel_f^2,
 \end{align}
 
-\noindent where $f_s^i$ (shorthanded for $f_s(I_i,I_c)$) is the SIFT flow field given by matching $I_i$ to canonical reference frame $I_c$. \textcolor[rgb]{1,0,0}{The reference frame of face images is chosen to be the level-1 Avatar Reference (AR) image~\cite{Yang_SMCB12} generated from the FERA-GEMEP dataset~\cite{Valstar_FERA11}. AR is essentially a face model reflects the expression and identity of the entire population in the dataset. It is computed by an iteratively algorithm that estimates the reference model and the individual expression model simultaneously. It is computed offline and has been demonstrated to perform well across datasets~\cite{Yang_SMCB12}. For different classes of objects, the canonical image representation is generated in the same way. Note that the SIFT flow field, $f_s^i$, encodes the motion of each pixel coordinate in order to match the input with the reference frame. Thus, there is an input space transformation for $\Pi(\cdot)$ in Eq.~\ref{data_sift}. Specifically, $\Pi(\cdot)$ takes the pixel intensity input and coordinate input on the left and right side of Eq.~\ref{data_sift}, respectively.}
+\noindent where $f_s^i$ (shorthanded for $f_s(I_i,I_c)$) is the pixel-wise SIFT flow field given by matching $I_i$ to canonical reference frame $I_c$. \Songfan{The reference frame of face images is chosen to be the level-1 Avatar Reference (AR) image~\cite{Yang_SMCB12} generated from the FERA-GEMEP dataset~\cite{Valstar_FERA11}. AR is essentially a face model reflects the expression and identity of the entire population in the dataset. It is computed by an iteratively algorithm that estimates the reference model and the individual expression model simultaneously. It is computed offline and has been demonstrated to perform well across datasets~\cite{Yang_SMCB12}. For different classes of objects, the canonical image representation is generated in the same way. }
 
-%$L_p$ is a $R\times C\times 3$ coordinate location grid template before any transformation, assuming image $P_i$ is of size $R\times C$. For example, the bottom left coordinate location is $(R,1,1)$ and the bottom right is $(R,C,1)$. The third dimension of $L_p$ is always $1$ in homogenous coordinates. 
+Regarding the smoothness constraint in Eq.~\ref{smooth}, we consider the optical flow between frames. Optical flow computes the motion between two frames by matching the corresponding intensity values. In the context of video processing, it is reasonable to assume that the frame rate is high enough to compute accurate optical flow for consecutive frames. \Songfan{With the pixel-level correspondence, we can approximate the current frame by its previous frame, i.e., $I_i\simeq I_{i-j}(p+f_o^{i-j,i})$, where $f_o^{i-j,i}$ is the optical flow field from frame $i-j$ to frame $i$. Thus, applying the corresponding registration transformation on both sides yields }
 
-Regarding the smoothness constraint in Eq. \ref{smooth}, we consider the optical flow between frames. Optical flow compute the motion between two frames by matching the corresponding intensity values. In the context of video processing, it is reasonable to assume that the frame rate is high enough to compute accurate optical flow for consecutive frames. \textcolor[rgb]{1,0,0}{With the pixel-level correspondence, we can approximate the current frame by its previous frame, i.e., $I_i\simeq I_{i-j}*f_o^{i-j,i}$, where $f_o^{i-j,i}$ is the optical flow field from frame $i-j$ to frame $i$; $*$ is the operator of applying pixel-wise motion to an image. Note that in an ideal case, optical flow provides an exact match between image pairs. Thus, applying the corresponding registration functions on both sides yields 
+\Songfan{
 \begin{align}
-\Pi_i(I_i) \simeq & \Pi_{i-j}(I_{i-j}*f_o^{i-j,i}) \nonumber \\
-					\simeq & I_{i-j}*f_o^{i-j,i}*f_s^{i-j} \nonumber \\
-					= & p+f_o^{i-j,i}+f_s^{i-j}	\nonumber
+\label{eq:smooth_inter}
+I_i(p+w_i)& \simeq I_{i-j}(p+f_o^{i-j,i}+w_{i-j}) \nonumber \\
+					& \simeq I_{i-j}(p+f_o^{i-j,i}+f_s^{i-j}).
 \end{align}
-The second to the last line is obtained because of our SIFT flow approximation in Eq.~\ref{data_sift}. The last line of the equation holds true due to that the pixel-wise transformation can be directly added in pixel coordinate space. }Therefore, the smoothness constraint in Eq. \ref{smooth} can be rewritten as 
+}
 
+\Songfan{The approximation in the second line holds true according to the structural constraint in Eq.~\ref{data_sift}. Once again, due to the illumination invariant assumption under high frame rate for optical flow, Eq.~\ref{eq:smooth_inter} is equivalent to}
+
+\Songfan{
+\begin{align}
+w_i \simeq f_o^{i-j,i}+f_s^{i-j}.	\nonumber
+\end{align}
+}
+
+\Songfan{Therefore, the smoothness constraint in Eq.~\ref{smooth} can be rewritten as }
+
+\Songfan{
 \begin{align}
 \label{smooth_opt}
-&\frac{\alpha}{2H}\sum_{i=2}^{N}\sum_{j=1}^{H}\parallel{\Pi_i(I_i)-\Pi_{i-j}(I_{i-j})}\parallel_2^2 \nonumber \\
-&\simeq\frac{\alpha}{2H}\sum_{i=2}^{N}\sum_{j=1}^{H}\parallel{\Pi_i(p)-(p+f_s^{i-j}+f_o^{i-j,i}))}\parallel_2^2
+&\frac{\alpha}{2H}\sum_{i=2}^{N}\sum_{j=1}^{H}\parallel{I_i(p+w_i)-I_{i-j}(p+w_{i-j})}\parallel_f^2 \nonumber \\
+&\simeq\frac{\alpha}{2H}\sum_{i=2}^{N}\sum_{j=1}^{H}\parallel{w_i-(f_o^{i-j,i}+f_s^{i-j})}\parallel_f^2.
 \end{align}
+}
 
-Now, the cost function is written as the sum of three L-2 norm terms in Eq. \ref{data_sift},\ref{smooth_opt},\ref{penalty}. We adopt $L$-2 norm because that the speed of algorithm is the main concern in this work, and we intend to derive closed-form solution for the optimization problem. We further assume that the transformation function is affine. As shown in our previous work \cite{Yang_FG13}, the computation of the $X,Y$-component can be decomposed, which creates space for speedup from parallel computation. Thus, the cost function is instantiated as
+Now, the cost function is written as the sum of three L-2 norm terms in Eq.~\ref{data_sift},\ref{smooth_opt},\ref{penalty}. We adopt $L$-2 norm because that the speed of algorithm is a main concern, and we intend to derive closed-form solution for the optimization problem. We further assume that the transformation function is affine. As shown in our previous work \cite{Yang_FG13}, the computation of the $X,Y$-component can be decomposed, which creates space for speedup from parallel computation. Thus, the cost function is instantiated as
 
 \begin{align}
 	\label{data_affine}
-E(\Pi_i)=&\sum_{i=1}^{N}\parallel{T_ip-(p+f_s^i)}\parallel_2^2
+E		=&\frac{1}{2}\sum_{i=1}^{N}\parallel{T_ip-p-f_s^i}\parallel_f^2
 \\\label{smooth_affine}
-				+&\frac{\alpha}{2H}\sum_{i=2}^{N}\sum_{j=1}^{H}\parallel{T_ip-(p+f_s^{i-j}+f_o^{i-j,i}))}\parallel_2^2
+				+&\frac{\alpha}{2H}\sum_{i=2}^{N}\sum_{j=1}^{H}\parallel{T_ip-p+(f_o^{i-j,i}+f_s^{i-j})}\parallel_f^2
 \\\label{penalty_affine}
-				+&\frac{\beta}{2}\sum_{i=1}^{N}\parallel{T_ip-p}\parallel_2^2
+				+&\frac{\beta}{2}\sum_{i=1}^{N}\parallel{T_ip-p}\parallel_f^2,
 \end{align} 
 
-\noindent where $T_i$ is the $3\times3$ affine matrix. With minor
- abuse of notion, $p$ is now a horizontal stacked coordinate location template in size $3\times m$, where $m=r\times c$, assuming that $r$ and $c$ are the image height and width, respectively. Each column of $p$ is a coordinate point $(x,y,1)$ in homogeneous coordinates. Taking the derivative of $E$ w.r.t. $\Pi_i$ and setting it to zero result in 
+\noindent where the flow $w_i$ is written as $T_ip-p$; $T_i$ is the $3\times3$ affine matrix. With minor
+ abuse of notion, $p$ is now a horizontal stacked coordinate location template of size $3\times m$, where $m=r\times c$, assuming that $r$ and $c$ are the image height and width, respectively. Each column of $p$ is a coordinate point $(x,y,1)$ in homogeneous coordinates. Taking the derivative of $E$ w.r.t. $T_i$ and setting it to zero result in 
 
 \begin{align}
 \label{eq:result}
-T_i=&(1+\alpha+\beta)^{-1}\cdot \nonumber \\
-		&(f_s^i+\frac{\alpha}{H}\sum_{j=1}^H(f_s^{i-j}+f_o^{i-j,i})+\beta{p})p^T(pp^T)^{-1}
+T_i=&(1+\alpha+\beta)^{-1}\times \nonumber \\
+		&(f_s^i+\frac{\alpha}{H}\sum_{j=1}^H(f_s^{i-j}+f_o^{i-j,i})+(1+\alpha+\beta)p)p^T(pp^T)^{-1}.
 \end{align}
 
 It is observed from Eq. \ref{eq:result} that for an certain input frame $i$, we have to compute its SIFT flow w.r.t. the canonical reference frame. Computing SIFT flow for every frame is time-consuming. However, given accurate optical flow estimation between frames, we can approximate the SIFT flow computation of the $i$-th frame by the sum of the SIFT flow of the $(i-1)$-th frame and the optical flow of $(i-1)$-th to $i$-th frame, i.e.
 
 \begin{align}
 \label{eq:approx}
-f_s^i=f_s^{i-1}+f_o^{i-1,i}
+f_s^i=f_s^{i-1}+f_o^{i-1,i},
 \end{align}
 
 This gives rise to the final closed-form solution as
 
 \begin{align}
 \label{eq:final}
-T_i=&(1+\alpha+\beta)^{-1}\cdot \nonumber \\
-		&(f_s^{i-1}+f_o^{i-1,i}+\frac{\alpha}{H}\sum_{j=1}^H(f_s^{i-j}+f_o^{i-j,i})+\beta{p})p^T(pp^T)^{-1}
+T_i=&(1+\alpha+\beta)^{-1}\times \nonumber \\
+		&(f_s^{i-1}+f_o^{i-1,i}+\frac{\alpha}{H}\sum_{j=1}^H(f_s^{i-j}+f_o^{i-j,i})) + I_3 \nonumber \\
 \end{align}
 
-Eq. \ref{eq:final} is suitable for dynamic programming implementation where we cache the previous SIFT flow, $f_s^{i-1}$. For the current frame $i$, we only carried out several optical flow computations, i.e., $f_o^{i-H,i},\ldots,f_o^{i-1,i}$. When $H$ is small, e.g., $3$-$5$, the optical flow is accurate and the total amount of optical flow computation is small. Besides, individual optical flow can be parallel computed to further speed up the algorithm. What's more, we use iteratively reweighted least squares (IRLS) \cite{Huber81} to robustly estimate the affine transformation matrix. 
+\noindent where $I_3$ is the $3\times 3$ identity matrix. Eq. \ref{eq:final} is suitable for dynamic programming implementation where we cache the previously computed SIFT flows, $f_s^{i-1}$. For the current frame $i$, we only carried out several optical flow computations, i.e., $f_o^{i-H,i},\ldots,f_o^{i-1,i}$. When $H$ is small, e.g., $3$-$5$, the optical flow is accurate and the total amount of optical flow computation is small. Besides, individual optical flow can be parallel computed to further speed up the algorithm. What's more, we use iteratively reweighted least squares (IRLS) \cite{Huber81} to robustly estimate the affine transformation matrix. 
 
 \begin{figure}[htbp]
 	\centering
@@ -435,13 +451,13 @@ We obtain considerable speedup from dynamic programming implementation for Eq. \
 \item Estimate affine transformation matrix using Eq. \ref{eq:final} based on the update coordinate value.
 \end{enumerate}
 
-We adopt the optical flow in OpenCV~\cite{opencv}. \textcolor[rgb]{1,0,0}{The aforementioned steps can be finished in approximately $47$ms on average for a $100\times100$ image on a quad-core Intel i7 4GHz machine with 32GB memory. In other words, the execution speed reaches 21 fps under this setting. }Since the bottleneck of our method is optical flow computation, one can further speedup the algorithm by GPU implementation. The initialization takes on the average \textcolor[rgb]{1,0,0}{$1.2$} second using the aforementioned settings. The computation is SIFT flow and optical flow are also in parallel. The loop-closure re-initialization is also in parallel with the the optical flow computation, and it will not affect the speed of the registration. 
+We adopt the optical flow in OpenCV~\cite{opencv}. \Songfan{The aforementioned steps can be finished in approximately $47$ms on average for a $100\times100$ image on a quad-core Intel i7 4GHz machine with 32GB memory. In other words, the execution speed reaches 21 fps under this setting. }Since the bottleneck of our method is optical flow computation, one can further speedup the algorithm by GPU implementation. The initialization takes on the average \Songfan{$1.2$} second using the aforementioned settings. The computation is SIFT flow and optical flow are also in parallel. The loop-closure re-initialization is also in parallel with the the optical flow computation, and it will not affect the speed of the registration. 
 
 
 %---------------------------------------------------------------
 \section{\label{sec:experiment}Experimental Results}
 
-\textcolor[rgb]{1,0,0}{In this section, we show results on facial action unit detection, vehicle recognition recognition, and image super-resolution. We have also included qualitative results on a range of classes of objects to demonstrate the generalizability of our approach.}
+\Songfan{In this section, we show results on facial action unit detection, vehicle recognition recognition, and image super-resolution. We have also included qualitative results on a range of classes of objects to demonstrate the generalizability of our approach.}
 
 \subsection{Facial Action Unit Recognition}
 
@@ -544,7 +560,7 @@ For registration methods with reference frame, i.e., EAI \cite{Yang_SMCB12}, SOF
 \begin{figure*}[htbp]
 	\centering
 		\includegraphics[width=.65\textwidth]{fig/object_ex.png}
-	\caption{\textcolor[rgb]{1,0,0}{More registration results using SOFIT for generic objects in video, each row of which represents challenges in different aspects. There are approximately 50 images per sequence and the reference frame is randomly selected from the sequence. The averages of each sequence before/after SOFIT alignment are shown in the last two columns. (a) Non-rigid motion, mainly found by the poses of horse. (b) In-plane and out-of-plane rotation. (c) Appearance variation. This row contains Magnetic Resonance Imaging (MRI) samples from different individuals. Though it is not strictly video per se, the results show that our method is robust against intensity variations. (d) Cluttered background. (e) Outliers. While the camera is non-stationary, there is a rocket moving against the Mars. Since we explicitly model the dominant motion of the scene, outliers (such as the rocket) have little impact on the alignment results.}}
+	\caption{\Songfan{More registration results using SOFIT for generic objects in video, each row of which represents challenges in different aspects. There are approximately 50 images per sequence and the reference frame is randomly selected from the sequence. The averages of each sequence before/after SOFIT alignment are shown in the last two columns. (a) Non-rigid motion, mainly found by the poses of horse. (b) In-plane and out-of-plane rotation. (c) Appearance variation. This row contains Magnetic Resonance Imaging (MRI) samples from different individuals. Though it is not strictly video per se, the results show that our method is robust against intensity variations. (d) Cluttered background. (e) Outliers. While the camera is non-stationary, there is a rocket moving against the Mars. Since we explicitly model the dominant motion of the scene, outliers (such as the rocket) have little impact on the alignment results.}}
 	\label{fig:object_ex}
 \end{figure*}
 
@@ -572,12 +588,12 @@ Three individuals manually labeled four vehicle type, namely sedan, minivan, pic
 
 Due to our camera setup, the recorded vehicle is moving away from the scene. Therefore, we consider the first frame of the video as the frame where the vehicle is fully observed. As we can imagine, the first frame is the one with the best quality of the entire sequence. Three methods in comparison are used to generate image representation of ROIs from each video. (a) First frame without alignment, (b) First frame with SIFT-flow affine alignment (namely the initialization step of our approach), (c) The median representation of the entire sequence aligned using SOFIT. We demonstrate that by simply taking the mean of the entire aligned sequence, the representation is superior to just using a single frame. The reference frame in use is also the level-1 Avatar Reference generated by following \cite{Yang_SMCB12}. Again, it is essentially an image based summary of the entire vehicle in canonical appearance. Sample alignment results are shown in Fig. \ref{fig:vehicle_reg_sample}.
 
-The ROIs are all resized to $200\times200$ for all three methods. The locally normalized Harris strength (LNHS) features~\cite{Pearce11} is used as the texture descriptor. We adopt the VLFeat~\cite{vlfeat} implementation for $\sigma=2.0$. The Harris strengths are split into $32\times32$ cells and normalized in $3\times3$ blocks. Descriptions are generated by shifting block by 1 pixel. We then use linear Support Vector Machine~\cite{sklearn} as the classifier without parameter tuning (i.e., $C=1.0$). A 10-fold cross validation is carried out and the result is reported in Fig.\ref{fig:fig_vehicle_cls_f1}. The F1 score shows that SOFIT alignment is able to leverage image sequences and generate a robust representation for superior classification accuracy. 
+The ROIs are all resized to $200\times200$ for all three methods. The locally normalized Harris strength (LNHS) features~\cite{Pearce11} is used as the texture descriptor. We adopt the VLFeat~\cite{vlfeat} implementation for $\sigma=2.0$. The Harris strengths are split into $32\times32$ cells and normalized in $3\times3$ blocks. Descriptions are generated by shifting block by 1 pixel. We then use linear Support Vector Machine~\cite{sklearn} as the classifier without parameter tuning (i.e., $C=1.0$). A 10-fold cross validation is carried out and the result is reported in Fig~.\ref{fig:fig_vehicle_cls_f1}. The F1 score shows that SOFIT alignment is able to leverage image sequences and generate a robust representation for superior classification accuracy. 
 
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.6\columnwidth]{fig/vehicle_cls_f1.png}
-	\caption{The boxplot of the 10-fold cross validation comparison. (a) unaligned, (b) aligned with initialization, (c) SOFIT.}
+	\caption{The 10-fold cross validation results comparison for vehicle recognition shown by the boxplot. (a) unaligned, (b) aligned with initialization, (c) SOFIT.}
 	\label{fig:fig_vehicle_cls_f1}
 \end{figure}
 
