@@ -143,7 +143,7 @@ E-mail: \{nthakoor,~bhanu\}@ee.ucr.edu}% <-this % stops a space
 
 
 % The paper headers
-\markboth{IEEE Transactions on Affective Computing}%
+\markboth{IEEE Transactions on Cybernetics}%
 {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of
 IEEEtran.cls for Computer Society Journals}
 % The only time the second header will appear is for the odd numbered pages
@@ -222,7 +222,7 @@ Video registration becomes a more challenging problem if there are object surfac
 \begin{enumerate}
 \item Facial expression comprises non-rigid muscle motion and rigid head motion.
 \item The head pose comprises of both in-plane rotation and out-of-plane rotation.
-\item The muscle motion is subtle in realist spontaneous expressions.
+\item The muscle motion is subtle in spontaneous expressions.
 \item The data are streaming instead of being in a batch form.
 \item The consecutive frames should comply with temporal smoothness constraint for micro-expression analysis.
 \item The imaging condition varies, such as the illumination or resolution of the face region.
@@ -240,7 +240,7 @@ To further clarify the aforementioned design objective, let us examine, via Fig.
 
 In this paper, we model the alignment-of-compound-motion problem in three steps. \textit{First}, each frame is aligned with respect to a reference frame in a general distance measure, which is then instantiated to the SIFT flow criterion, thereafter. \textit{Second}, our model enforces a smoothness constraint on adjacent frames. It is realistic for the consecutive frames to comply with the smoothness constraint. We realize this by depending this current transformation estimation on a number of previous frames in an optical flow criterion. \textit{Third}, large transformation is penalized to prevent over-fitting. 
 
-We also extend this approach to register many other types of objects and demonstrate a wide range of applications in areas such as image super-resolution. 
+We also extend this approach to register many other types of objects and demonstrate applications in areas such as image super-resolution. 
 
 The rest of the paper is organized as follows. After reviewing the related work and highlighting our contribution in Section~\ref{sec:relatedWork_Contribution}, Section~\ref{sec:approach} presents our general model as well as the solution to the registration problem using the dense flow approximation to estimate the affine transformation parameters. The experimental results and discussions are provided in Section~\ref{sec:experiment}. Finally the conclusion is drawn in Section~\ref{sec:conclusion}.
 
@@ -252,14 +252,14 @@ The rest of the paper is organized as follows. After reviewing the related work 
 
 Video registration has been a fundamental topic in computer vision and image processing. As an object may undergo a complex motion (rigid and/or non-rigid), conventional video registration methods~\cite{Uenohara95}~\cite{Caspi_PAMI02} attempt to correct both types of motion. On the contrary, we attempt to remove the rigid motion while retaining and characterizing the non-rigid motion. Such problem occurs when a moving object has deformable surface, which may contain crucial information (\textit{e.g.} facial expression).
 
-To analyze facial expressions, behavioral scientists have developed Facial Action Coding System (FACS)~\cite{Ekman78} as an objective standard to describe the muscle motion. According to FACS, human (coders) can decompose every possible facial behavior into Action Units (AU), which roughly correspond to the muscles that produce them. Automatic AU recognition~\cite{Zhao_PAMI07}\cite{Valstar_SMCB12}, has been quite successful for well-aligned, posed data, such as MMI~\cite{Pantic_ICME05} and CK+~\cite{Kanade_FG00} dataset. Unfortunately, AU recognition in an uncontrolled real-world environment remains a difficult problem, as shown in the Facial Expression Recognition and Analysis Challenge (FERA2011)~\cite{Valstar_FERA11}, due to the difficulties mentioned in Section~\ref{sec:intro}. Existing face registration approaches attempt to solve different aspects of the aforementioned challenges. In the face recognition and image retrieval communities, researchers attempt to discard the non-rigid motion from facial data through registration using an ensemble of images~\cite{LearnedMiller_PAMI06}\cite{Huang_ICCV07}\cite{Peng_PAMI12}. These approaches are not suitable in the facial expression recognition domain, where the following three criteria should be met:
+To analyze facial expressions, behavioral scientists have developed Facial Action Coding System (FACS)~\cite{Ekman78} as an objective standard to describe the muscle motion. According to FACS, human (coders) can decompose every possible facial behavior into Action Units (AU), which roughly correspond to the muscles that produce them. Automatic AU recognition~\cite{Zhao_PAMI07}\cite{Valstar_SMCB12}, has been quite successful for well-aligned, posed data, such as MMI~\cite{Pantic_ICME05} and CK+~\cite{Kanade_FG00} dataset. Unfortunately, AU recognition in an uncontrolled real-world environment remains a difficult problem, as shown in the Facial Expression Recognition and Analysis Challenge (FERA2011~\cite{Valstar_FERA11} and FERA2015~\cite{FERA15}), due to the difficulties mentioned in Section~\ref{sec:intro}. Existing face registration approaches attempt to solve different aspects of the aforementioned challenges. In the face recognition and image retrieval communities, researchers attempt to discard the non-rigid motion from facial data through registration using an ensemble of images~\cite{LearnedMiller_PAMI06}\cite{Huang_ICCV07}\cite{Peng_PAMI12}. These approaches are not suitable in the facial expression recognition domain, where the following three criteria should be met:
 \begin{enumerate}
 \item Non-rigid facial muscle motion, which carries essential information for expression inference, should be retained. 
 \item Facial features should be aligned under various muscle motions and pose variations. 
 \item Subtle facial muscle motion should be captured for spontaneous facial expression analysis.
 \end{enumerate}
 
-To align faces with expressions, the state-of-the-art systems~\cite{Valstar_SMCB12}\cite{Littlewort_CERT_FG2011} track a set of anchor points on the face and estimate the affine transformation based on which the entire face is warped. Although the most recent facial point detection techniques~\cite{Martinez_PAMI13,Xiong13,Zhu_CVPR12,Tadas_ECCV14} are able to achieve accurate detection results, there are two significant issues that need to be addressed. First of all, the affine estimation is sensitive to small perturbation of point detection results. Typically in point-based method, a number of facial fiducial points (\textit{e.g.}, 20 points in~\cite{Valstar_SMCB12} and~\cite{Martinez_PAMI13}) are detected. Each point carries much more weights in the estimation of the affine transformation matrix compared with methods that use corresponding information from the entire image, as demonstrated by Fig.~\ref{fig:regComp}.
+To align faces with expressions, the state-of-the-art systems~\cite{Valstar_SMCB12,Littlewort_CERT_FG2011,Tadas_FERA15} track a set of anchor points on the face and estimate the affine transformation based on which the entire face is warped. Although the most recent facial point detection techniques~\cite{Martinez_PAMI13,Xiong13,Zhu_CVPR12,Tadas_ECCV14} are able to achieve accurate detection results, there are two significant issues that need to be addressed. First of all, the affine estimation is sensitive to small perturbation of point detection results. Typically in point-based method, a number of facial fiducial points (\textit{e.g.}, 20 points in~\cite{Valstar_SMCB12} and~\cite{Martinez_PAMI13}) are detected. Each point carries much more weights in the estimation of the affine transformation matrix compared with methods that use corresponding information from the entire image, as demonstrated by Fig.~\ref{fig:regComp}.
 
 Besides, affine transform parameter estimation by a small set of points can be susceptible to detection errors. In a realistic case where the resolution of the face is not high enough, the accuracy of feature point detection will also degrade. Yang and Bhanu~\cite{Yang_SMCB12} adopt SIFT flow technique~\cite{Liu_PAMI11} to align every frame to a reference face. As shown in Fig.~\ref{fig:regComp}, column 3, the outcome of the SIFT flow transform displays a large amount of discontinuities and artifacts. Although they solve this issue by generating image-based face representations (\textit{i.e.}, Emotion Avatar Image) and a reference model (\textit{i.e.}, Avatar Reference), carrying out the double layer loopy-belief propagation in SIFT flow for every frame is computationally expensive and not suitable for real-time systems.
 
@@ -272,6 +272,8 @@ The contributions of this work are summarized as follows:
 \item We propose a novel real-time streaming registration framework, SOFIT, that aligns the objects under compound motion. SOFIT is a holistic approach and no detection of local features (eyes, nose, mouth) is needed. Therefore, it is tolerant to noise, detection error, and low image resolution. The proposed method results in temporally smooth and aligned image sequences.
 \item We quantitatively demonstrate the versatility of our registration method in the fields of spontaneous AU recognition and image super-resolution. We also show results for generic object alignment under various challenges.
 \end{enumerate}
+
+More results can be found on our project website~\footnote{\url{http://www.ee.ucr.edu/~syang/sofit/index.html}}.
 
 %-------------------------------------------------------------------------
 \section{\label{sec:approach}Flow-based Real-time Object Registration}
@@ -443,7 +445,7 @@ In our model, we make a compromise between model optimality and computation effi
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.9\columnwidth]{fig/error_prop.eps}
-	\caption{The error accumulation with over time. The error is defined as the SIFT flow of the current frame to the canonical reference frame. We use loop-closure (LC) to update the global flow estimation and rectify the error. The LC is carried out every $300$ frames in this experiment.}
+	\caption{The error accumulation over time. The error is defined as the SIFT flow of the current frame to the canonical reference frame. We use loop-closure (LC) to update the global flow estimation and rectify the error. The LC is carried out every $300$ frames in this experiment.}
 	\label{fig_error_prop}
 \end{figure}
 
@@ -463,7 +465,7 @@ We adopt the optical flow implementation in OpenCV~\cite{opencv}. The aforementi
 %---------------------------------------------------------------
 \section{\label{sec:experiment}Experimental Results}
 
-In this section, we show results on two applications of the proposed method, including facial AU detection and image super-resolution. In addition, we have also included qualitative results on different types of objects to demonstrate the generalizability of our approach.
+In this section, we show results on two applications of the proposed method, including facial AU recognition and image super-resolution. For AU recognition, we follow the challenge guideline of FERA2011 and FERA2015 for a thorough analysis and comparison. In addition, we have also included qualitative results on different types of objects to demonstrate the generalizability of our approach.
 
 \subsection{Facial Action Unit Recognition}
 
@@ -474,8 +476,8 @@ The goal of AU recognition is to detect a set of frequently occurring AUs on a p
 \end{enumerate}
 
 \noindent \textbf{Datasets: FERA-GEMEP}
-	
-We first demonstrate SOFIT face registration technique by facial AU recognition on FERA Challenge dataset~\cite{FERA11}.  We use the same protocol as the FERA2011~\cite{Valstar_FERA11} AU sub-challenge. The data we use for training is the GEMEP-FERA training dataset, which includes 87 sequences and around 5400 frames. The pose and gesture of the subjects in this dataset are uncontrolled, and therefore, this dataset is more realistic and complex compared to MMI~\cite{Pantic_ICME05} and CK+~\cite{Kanade_FG00} datasets.
+
+We first demonstrate SOFIT face registration technique by facial AU recognition on FERA Challenge 2011 dataset~\cite{FERA11}. We use the same protocol as the FERA2011~\cite{Valstar_FERA11} AU sub-challenge. The data we use for training is the GEMEP-FERA training dataset, which includes 87 sequences and around 5400 frames. The pose and gesture of the subjects in this dataset are uncontrolled, and therefore, this dataset is more realistic and complex compared to the legendary MMI~\cite{Pantic_ICME05} and CK+~\cite{Kanade_FG00} datasets.
 
 To address the aforementioned issues, we use the exact same features as the baseline approach for a fair comparison. The only variable in our experiment design is using different registration methods. The \textit{baseline} registration method detects both eye locations on the faces, and then unifies their scales, and in-plane rotations. This registration belongs to in-plane image transformation category as summarized in~\cite{Yang_SMCB12}. A typical point-based registration method tracks facial landmarks and estimates the affine (or piece-wise affine) transformation based on a set of rigid landmarks such as eye corners or nose~\cite{Littlewort_CERT_FG2011,Valstar_SMCB12,IntraFace,McDuff_TAC14,Tadas_ECCV14}. We term this family of methods as point-based affine (\textit{PA}), and we use piece-wise affine in our experiment. Another registration technique in comparison is the Emotion Avatar Image (\textit{EAI})~\cite{Yang_SMCB12}, which achieves the best performance in FERA Challenge 2011.
 
@@ -515,9 +517,9 @@ Concretely, the feature dimensions are the following:
 
 
 
-For registration methods with reference frame, \textit{i.e.}, EAI~\cite{Yang_SMCB12}, and SOFIT, we use the Level-1 Avatar Reference~\cite{Yang_SMCB12} generated from the FERA Challenge training data \cite{FERA11}. To generate an EAI representation, we need to determine a temporal length parameter. The authors of the original EAI paper~\cite{Yang_SMCB12} chose this parameter as the length of a single video (around $2$ seconds) for facial expression recognition on a per-video basis. To generalize this registration technique in AU recognition on a per-frame basis, we empirically determine the best value for the temporal length parameter. We carry out a leave-one-subject-out cross validation on the FERA-GEMEP AU training data, and find $0.56$ second is a reasonable temporal length to achieve the best F1 score over all AUs. This means that for each frame in a video, approximately $14$ consecutive frames are used to compute EAI representation. For the boundary frames, \textit{i.e.} the starting and the ending $7$ frames, we simply assign their values to be the $8$th frame from the beginning and from the end, respectively. The aforementioned features are extracted from the EAI representations thereafter.
+For registration methods with reference frame, \textit{i.e.}, EAI~\cite{Yang_SMCB12}, and SOFIT, we use the Level-1 Avatar Reference~\cite{Yang_SMCB12} generated from the FERA Challenge training data \cite{FERA11}. To generate an EAI representation, we need to determine a temporal length parameter. In~\cite{Yang_SMCB12}, this parameter is chosen as the length of a single video (around $2$ seconds) for facial expression recognition on a per-video basis. To generalize this registration technique in AU recognition on a per-frame basis, we empirically determine the best value for the temporal length parameter. We carry out a leave-one-subject-out cross validation on the FERA-GEMEP AU training data, and find $0.56$ second is a reasonable temporal length to achieve the best F1 score over all AUs. This means that for each frame in a video, approximately $14$ consecutive frames are used to compute EAI representation. For the boundary frames, \textit{i.e.} the starting and the ending $7$ frames, we simply assign their values to be the $8$th frame from the beginning and from the end, respectively. The aforementioned features are extracted from the EAI representations thereafter.
 
-For \textit{PA} method, 83 points are tracked using~\cite{Tadas_ECCV14}. Each image is then registered by piece-wise affine warping estimated from 41 rigid points, including nose, eye corner, and etc. We only include the texture in the face region and blacken the periphery of the $100\times 100$ region. Since the non-face region will not interfere the classification model training, for simplicity, we include all regions for feature extraction.  
+For PA method, 83 points are tracked using~\cite{Tadas_ECCV14}. Each image is then registered by piece-wise affine warping estimated from 41 rigid points, including nose, eye corner, and etc. We only include the texture in the face region and blacken the periphery of the entire region. Since the non-face region will not interfere the classification model training, for simplicity, we include all regions for feature extraction.  
 
 \begin{figure*}[t]
 	\centering
@@ -527,41 +529,37 @@ For \textit{PA} method, 83 points are tracked using~\cite{Tadas_ECCV14}. Each im
 \end{figure*}
 
 
-\begin{figure}[htbp]
-	\centering
-		\includegraphics[width=.8\columnwidth]{fig/suppliment.eps}
-	\caption{Examples of face alignment results using SOFIT. By aligning with a canonical reference face, all pose rotations, translations, and scales are rectified. }
-	\label{fig:suppliment}
-\end{figure}
-
-
-Since the ground-truth label is only available for the FERA-AU training set, we carry out a person-independent cross validation experiment, where no test subject is used for training, and the average performance is reported. Due to the finite scale of the training exemplars, person-independent test is essential to demonstrate the generalization ability of an approach to unseen subjects. Table~\ref{table:fera} shows the performance obtained using both LBP and LBP-TOP feature extractors, respectively. The area under curve (AUC) score of the receiver operating characteristic (ROC) curve is reported. As seen from Table~\ref{table:fera}, on average, SOFIT outperforms the other methods by a significant margin using both LBP and LBP-TOP features. SOFIT achieves the best performance in 9 out of 12 AU classification tasks. In general, LBP-TOP out-perform LBP likely due to the dynamic information extracted. EAI is on par with PA in terms of average AUC score. EAI performs well in categorical emotion recognition~\cite{Yang_SMCB12}; in a per-frame based setting, however, EAI lacks ability to maintain the subtle muscle motion. Moreover, dynamic feature is not advantageous in the EAI case. A plausible explanation is that the inherent dynamics are buried in the blockiness artifacts caused by SIFT flow. We should point out that the video sequences in FERA-GEMEP is relatively short, \textit{i.e.} around 2 seconds. Thus, the propagation error is negligible and thus we exclude the loop closure rectification procedure in this experiment. 
+Since the ground-truth label is only available for the FERA-AU training set, we carry out a person-independent cross validation experiment, where no test subject is used for training, and the average performance is reported. Due to the finite scale of the training exemplars, person-independent test is essential to demonstrate the generalization ability of an approach to unseen subjects. Table~\ref{table:fera} shows the performance obtained using both LBP and LBP-TOP feature extractors, respectively. The area under curve (AUC) score of the receiver operating characteristic (ROC) curve is reported. As seen from Table~\ref{table:fera}, on average, SOFIT outperforms the other methods by a significant margin using both LBP and LBP-TOP features. SOFIT achieves the best performance in 9 out of 12 AU classification tasks. In general, LBP-TOP out-perform LBP likely due to the dynamic information extracted. EAI is on par with PA in terms of the average AUC score. EAI performs well in categorical emotion recognition~\cite{Yang_SMCB12}; in a per-frame based setting, however, EAI lacks the ability to maintain the subtle muscle motion. Moreover, dynamic feature is not advantageous in the EAI case. A plausible explanation is that the inherent dynamics are buried in the block artifacts caused by SIFT flow. We should point out that the video sequences in FERA-GEMEP is relatively short, \textit{i.e.} around 2 seconds. Thus, the propagation error is negligible and thus we exclude the loop closure rectification procedure in this experiment. 
 
 \noindent \textbf{Datasets: BP4D}
-We also carry out experiments on the BP4D~\cite{BP4D} dataset. It is a spontaneous facial expression dataset collected in an lab setting with uncontrolled pose and gesture. It contains 41 subjects participating in 8 tasks, which are designed to solicit expressions that are not deliberately posed. The subjects are aging from 18 to 29 covering various ethnicity groups. The original dataset includes both 2D and 3D videos, and we only use the 2D videos in our experiment. Similar to the FERA-GEMEP dataset, the group truth label of each frame is obtained according to the FACS. 
 
-The person-independent experimental setup is the same as in~\cite{BP4D}, where we follow a 10-fold cross-validation procedure and use 39 subjects for training and 2 for testing. We adopt the aforementioned preprocessing and feature extraction steps. The experimental results for BP4D is tabulated in Table~\ref{table:bp}. Similar observation can be made as in the FERA dataset. SOFIT achieves the best score in most AU detection tasks and the dynamic feature improves the performance except for the EAI case. 
+We also carry out experiments on the BP4D~\cite{BP4D} dataset, which is also used by FERA2015 challenge~\cite{FERA15}. It is a spontaneous facial expression dataset collected in an lab setting with uncontrolled pose and gesture. It contains 41 subjects participating in 8 tasks, which are designed to solicit expressions that are not deliberately posed. The subjects are aging from 18 to 29 covering various ethnicity groups. The original dataset includes both 2D and 3D videos, and we only use the 2D videos in our experiment. The dataset is partitioned into \textit{Training} and \textit{Development} sets with the ground truth label available. Similar to the FERA-GEMEP dataset, the ground truth label of each frame is obtained according to the FACS. Each subject has 8 sessions: 168 sessions in the training and 160 sessions in the development partition, each of which has over $70k$ images.
+
+In FERA2015, the performance is measured by the $F1$ score, calculated as:
+
+\begin{align}
+F_1 = \frac{2PR}{P+R}
+\end{align}
+
+\noindent where $P$ and $R$ represents the precision and recall, respectively.
+
+The challenge baseline system uses Viola-Jones face detector and directly extract the appearance feature, Local Binary Gabor Patterns (LGBP)~\cite{LGBP}. LGBP is essentially the LBP features extract from the Gabor filter magnitude response of the original image, resulting a $16,992$ feature dimension for each frame. The feature dimension is then reduced by Principle Component Analysis (PCA) while keep 98\% of the energy. 
+
+We then carry out a person-independent experiment on the training set, similar to the ones in~\cite{BP4D,FERA15}, where we follow a 10-fold cross-validation procedure and use 19 subjects for training and 2 for testing. The one-vs-all linear SVM is used to train each classifier. The best parameter combination is then used to the classification model on the entire training set, and the results for the development set is tabulated in Table~\ref{table:bp}. Similar observation can be made as in the FERA dataset. SOFIT achieves the best score in most AU detection tasks. By fix the other variables, it is clear that the performance improvement is due to the proposed SOFIT registration method.
 
 
 \begin{table*}[htbp]
-\caption{Person-independent AUC-score result on BP4D dataset (2D data only)}
+\caption{Person-independent F1-score on BP4D development set (2D data only)}
 \begin{center}
 \label{table:bp}
-\begin{tabular}{ccccccccccccccc}
+\begin{tabular}{cccccccccccccc}
 \toprule
-& & AU1 & AU2 & AU4 & AU6 & AU7 & AU10 & AU12 & AU14 & AU15 & AU17 & AU23 & AU24 & Avg.	\\ 
+& AU1 & AU2 & AU4 & AU6 & AU7 & AU10 & AU12 & AU14 & AU15 & AU17 & AU23 & Avg.	\\ 
 \midrule
-\multirow{2}{*}{BaseLine~\cite{Valstar_FERA11}}	& LBP 		&0.53 	&0.55 	&0.47 	&0.59 	&0.49 	&0.55 	&0.59 	&0.50 	&0.59 	&0.56 	&0.49 	&0.53 	&0.54 \\
-																								& LBP-TOP &0.54 	&0.61 	&0.49 	&0.61 	&0.48 	&0.55 	&0.54 	&0.51 	&0.60 	&0.57 	&0.51 	&0.55 	&0.55 \\
-																								\midrule
-\multirow{2}{*}{PA~\cite{Tadas_ECCV14}}					& LBP 		&0.58 	&0.61 	&0.49 	&0.62 	&0.49 	&0.61 	&0.61 	&0.54 	&0.59 	&0.61 	&0.55 	&0.57 	&0.57 \\
-																								& LBP-TOP &0.57 	&0.58 	&0.52 	&0.64 	&\textbf{0.57}\cellcolor[gray]{0.9} 	&0.60 	&0.58 	&0.52 	&0.64 	&0.60 	&\textbf{0.59}\cellcolor[gray]{0.9} 	&0.61 	&0.58 \\
-																								\midrule
-\multirow{2}{*}{EAI~\cite{Yang_SMCB12}}					& LBP 		&0.61 	&0.62 	&0.55 	&0.60 	&0.55 	&0.61 	&0.65 	&\textbf{0.55}\cellcolor[gray]{0.9} 	&0.60 	&0.60 	&0.50 	&0.52 	&0.58 \\
-																								& LBP-TOP &0.63 	&0.58 	&0.55 	&0.61 	&0.48 	&0.61 	&0.60 	&0.50 	&0.62 	&0.58 	&0.57 	&0.52 	&0.57 \\
-																								\midrule				
-\multirow{2}{*}{SOFIT}													& LBP 		&0.57 	&\textbf{0.65}\cellcolor[gray]{0.9} 	&\textbf{0.56}\cellcolor[gray]{0.9} 	&0.64 	&0.48 	&0.62 	&0.60 	&\textbf{0.55}\cellcolor[gray]{0.9} 	&0.59 	&0.61 	&0.54 	&0.65 	&0.59 \\
-																								& LBP-TOP &\textbf{0.65}\cellcolor[gray]{0.9} 	&0.63 	&0.56 	&\textbf{0.71}\cellcolor[gray]{0.9} 	&0.53 	&\textbf{0.67}\cellcolor[gray]{0.9} 	&\textbf{0.66}\cellcolor[gray]{0.9} 	&0.53 	&\textbf{0.68}\cellcolor[gray]{0.9} 	&\textbf{0.66}\cellcolor[gray]{0.9} 	&0.58 	&\textbf{0.66}\cellcolor[gray]{0.9} 	&\textbf{0.63}\cellcolor[gray]{0.9} \\
+BaseLine~\cite{FERA15}	&0.35	&0.26	&0.40	&0.77	&0.74	&0.78	&0.81	&0.60	&0.25	&0.52	&0.26	&0.52 \\
+PA~\cite{Tadas_ECCV14}					&0.36	&0.26	&0.42	&0.70	&0.74	&0.81	&0.84	&0.60	&\textbf{0.36}\cellcolor[gray]{0.9}	&0.58	&0.35	&0.55 \\
+EAI~\cite{Yang_SMCB12}					&0.38	&0.27	&\textbf{0.47}\cellcolor[gray]{0.9}	&0.78	&0.78	&0.82	&0.82	&0.60	&0.35	&0.60	&0.31	&0.56 \\
+SOFIT														&\textbf{0.41}\cellcolor[gray]{0.9}	&\textbf{0.32}\cellcolor[gray]{0.9}	&0.45	&\textbf{0.80}\cellcolor[gray]{0.9}	&\textbf{0.80}\cellcolor[gray]{0.9}	&\textbf{0.86}\cellcolor[gray]{0.9}	&\textbf{0.89}\cellcolor[gray]{0.9}	&\textbf{0.62}\cellcolor[gray]{0.9}	&0.35	&\textbf{0.61}\cellcolor[gray]{0.9}	&\textbf{0.36}\cellcolor[gray]{0.9}	&\textbf{0.59}\cellcolor[gray]{0.9} \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -571,6 +569,13 @@ The person-independent experimental setup is the same as in~\cite{BP4D}, where w
 
 \noindent \textbf{Qualitative Comparison}
 Fig.~\ref{fig:fera_diff} shows the qualitative evaluation on explaining why our registration improves over the baseline and EAI approaches. We compute the absolute frame difference of the first 5 frames for both unaligned and aligned faces. As shown in the row 6 and 3 of Fig.~\ref{fig:fera_diff}, the unaligned frame difference reveals motion mainly caused by the \textit{edge} feature of a face, while after alignment, the non-rigid muscle motion is retained. We provide more visual alignment results on faces in Fig.~\ref{fig:suppliment}.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.8\columnwidth]{fig/suppliment.eps}
+	\caption{Examples of face alignment results using SOFIT. By aligning with a canonical reference face, all pose rotations, translations, and scales are rectified. }
+	\label{fig:suppliment}
+\end{figure}
 
 
 
@@ -587,9 +592,6 @@ Fig.~\ref{fig:fera_diff} shows the qualitative evaluation on explaining why our 
 
 In the imaging process, it is common to acquire images with low-resolution (LR) and/or certain artifacts such as blurriness, noise, \textit{etc}. Image super-resolution (SR) is the process of generating a high-resolution (HR) image from one or more LR inputs. In the past few decades, there has been extensive work on super-resolution methods. Based on the inputs, the SR algorithms can be classified in two categories: single-image based~\cite{Sun_CVPR08} and multi-image based methods~\cite{Irani91}. We apply SOFIT registration algorithm proposed in this paper to generate aligned images as inputs to different multi-image based SR methods. Here we compare our registration method with two other ones: frequency domain based method (FR)~\cite{Vandewalle06}, and registration using sub-pixel displacement (SP)~\cite{Keren_CVPR88}. These registration methods are then used in two SR methods: iterated back-projection (BP)~\cite{Irani91}, and normalized convolution based method (NC)~\cite{Pham_06}. Fig.~\ref{fig:superResolution} shows the visual comparison of some sample results using different registration methods in different SR algorithms.
 
-From Fig.~\ref{fig:superResolution} we see that with our registration method, the SR results are significantly improved over the other SR methods in terms of visual quality. Despite the poor quality of the input frames, the results by our method are smooth with much fewer artifacts (\textit{e.g.}, noise and blockiness). The gain on the performance of SR directly comes from the accurate registration by the proposed method.. The output images by our methods are also well rectified which would be desirable for post-processing or subsequent recognition tasks. 
-
-To quantitatively evaluate the image quality using our registration method, we compute a recent proposed non-reference image quality index, Quality-aware clustering (QAC)~\cite{Xue_CVPR13}, for output images using our method and the competing super-resolution methods. QAC is a general purpose blind image quality assessment method that has high correlation with human perception of image quality. Fig.~\ref{fig:SR_quant} lists the average image quality scores on 87 sequences from GEMEP-FERA database~\cite{FERA11}. Compared to the LR input and output using different registration methods, the output of SOFIT achieves the highest scores with the lowest standard deviation, which indicates better visual quality in terms of QAC image quality measure.
 
 \begin{figure}[t]
 	\centering
@@ -597,6 +599,15 @@ To quantitatively evaluate the image quality using our registration method, we c
 	\caption{Image quality comparison between video-based super-resolution results and the proposed method, SOFIT. A recent non-reference image quality assessment method~\cite{Xue_CVPR13} is used. The higher the score, the better the estimated visual quality is. LR stands for low-resolution input images. SP denotes the super-resolved results using~\cite{Keren_CVPR88}. FR is the super-resolved results using~\cite{Vandewalle06}. SOFIT outperform other benchmarks and has less variance, indicated by the black line. }
 	\label{fig:SR_quant}
 \end{figure}
+
+
+From Fig.~\ref{fig:superResolution} we can see that with our registration method, the SR results are significantly improved over the other SR methods in terms of visual quality. Despite the poor quality of the input frames, the results by our method are smooth with much fewer artifacts (\textit{e.g.}, noise and blockiness). The gain on the performance of SR directly comes from the accurate registration by the proposed method.. The output images by our methods are also well rectified which would be desirable for post-processing or subsequent recognition tasks. 
+
+
+
+
+To quantitatively evaluate the image quality using our registration method, we compute a recent proposed non-reference image quality index, Quality-aware clustering (QAC)~\cite{Xue_CVPR13}, for output images using our method and the competing super-resolution methods. QAC is a general purpose blind image quality assessment method that has high correlation with human perception of image quality. Fig.~\ref{fig:SR_quant} lists the average image quality scores on 87 sequences from GEMEP-FERA database~\cite{FERA11}. Compared to the LR input and output using different registration methods, the output of SOFIT achieves the highest scores with the lowest standard deviation, which indicates better visual quality in terms of QAC image quality measure.
+
 
 
 \subsection{Generic Object Registration}
@@ -610,8 +621,6 @@ To quantitatively evaluate the image quality using our registration method, we c
 \end{figure*}
 
 In addition, we apply our method to other objects with challenges in various aspects, shown in Fig.~\ref{fig:object_ex}. Each video contains approximately 50 frames of a detected object with compound motions. For each video, we randomly select one frame to be the reference as the input of our method. The visual results are shown in the last two columns of Fig.~\ref{fig:object_ex}, where the mean image results are sharper and reveals more local details. To quantitatively demonstrate that our algorithm generates image sequences with smoother transition, the $\ell_2$ norm of the between-frame optical flow is computed and then averaged across the entire sequence. It is essentially the average optical flow length of a sequence, reported below the corresponding mean image in Fig.~\ref{fig:object_ex}. It is observed that the average optical flow length is generally smaller, indicating a smoother sequence after our alignment algorithm.
-
-
 
 \subsection{Limitations}
 The proposed method assumes that the objects are already detected at similar scales. Such assumption holds in practice for some applications such as face analysis, which are indeed our main focus in this paper. Object detection in general is still a challenging topic. It still needs a great amount of effort to improve its performance even in predefined domains, such as face detection and pedestrian detection in the wild under low image resolution. For applications in which the detection itself is difficult or the scale varies greatly, our method may fail to work.
